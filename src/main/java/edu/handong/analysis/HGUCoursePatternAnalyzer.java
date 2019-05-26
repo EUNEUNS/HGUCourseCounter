@@ -7,8 +7,9 @@ import java.util.TreeMap;
 
 import edu.handong.analysis.datamodel.Course;
 import edu.handong.analysis.datamodel.Student;
-import edu.handong.analysise.utils.NotEnoughArgumentException;
-import edu.handong.analysise.utils.Utils;
+import edu.handong.analysis.utils.NotEnoughArgumentException;
+//import edu.handong.analysis.utils.NotEnoughArgumentException;
+import edu.handong.analysis.utils.Utils;
 
 public class HGUCoursePatternAnalyzer {
 
@@ -22,11 +23,11 @@ public class HGUCoursePatternAnalyzer {
 	public void run(String[] args) {
 		
 		try {
-			// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
+	// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
 			if(args.length<2)
-				throw new NotEnoughArgumentException();
+			throw new NotEnoughArgumentException();
 		} catch (NotEnoughArgumentException e) {
-			System.out.println(e.getMessage());
+		System.out.println(e.getMessage());
 			System.exit(0);
 		}
 		
@@ -35,10 +36,11 @@ public class HGUCoursePatternAnalyzer {
 		ArrayList<String> lines = Utils.getLines(dataPath, true);
 		
 		students = loadStudentCourseRecords(lines);
-		
 		// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
 		Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
-		
+	
+
+
 		// Generate result lines to be saved.
 		ArrayList<String> linesToBeSaved = countNumberOfCoursesTakenInEachSemester(sortedStudents);
 		
@@ -47,16 +49,55 @@ public class HGUCoursePatternAnalyzer {
 	}
 	
 	/**
-	 * This method create HashMap<String,Student> from the data csv file. Key is a student id and the corresponding object is an instance of Student.
+	 * This method create HashMap<String,Student> from the data csv file. 
+	 * 
+	 * Key is a student id and the corresponding object is an instance of Student.
 	 * The Student instance have all the Course instances taken by the student.
 	 * @param lines
 	 * @return
 	 */
 	private HashMap<String,Student> loadStudentCourseRecords(ArrayList<String> lines) {
+		HashMap<String,Student> loadStuCourse = new HashMap<String,Student>();
+		for(String line: lines) {
+			Course cour = new Course(line);
+			Student stustu = new Student(cour.getStudentId());
+			
+			if(loadStuCourse.containsKey(cour.getStudentId())) {
+				loadStuCourse.get(cour.getStudentId()).addCourse(cour);
+			
+			}else {
+				stustu.addCourse(cour);
+				
+				loadStuCourse.put(cour.getStudentId(),stustu);
+				
+			
+			}
+		}
+			return loadStuCourse;
 		
-		// TODO: Implement this method
+		/*
 		
-		return null; // do not forget to return a proper variable.
+		for(int i=0; i < lines.size();i++) {
+			String line = lines.get(i);
+			String[] names = line.split(("\\s,\\s"));
+			String name = names[0];
+			String course = names[5];
+			Student stustu = new Student(name);
+			if(!stu.contains(stustu)) {
+				stu.add(stustu);
+		if(loadStuCourse.containsKey(stu.contains(stustu))) {
+				
+		}else {
+			
+			
+		}*/
+			
+		
+		
+		// TODO: Implement this method	
+		
+		 // do not forget to return a proper variable.
+		
 	}
 
 	/**
@@ -65,17 +106,45 @@ public class HGUCoursePatternAnalyzer {
 	 * 0001,14,1,9
      * 0001,14,2,8
 	 * ....
-	 * 
-	 * 0001,14,1,9 => this means, 0001 student registered 14 semeters in total. In the first semeter (1), the student took 9 courses.
-	 * 
-	 * 
-	 * @param sortedStudents
+	 * 0001,14,1,9 => this means, 0001 student registered 14 semeters in total.
+	 * In the first semeter (1), the student took 9 courses.
+		 * @param sortedStudents
 	 * @return
 	 */
 	private ArrayList<String> countNumberOfCoursesTakenInEachSemester(Map<String, Student> sortedStudents) {
+		ArrayList<String> countNumOfCour = new ArrayList<String>();
+		int totalSem=0;
+		for(Map.Entry<String,Student> entry : sortedStudents.entrySet()) {
+			Student studentToCheck = entry.getValue();
+			String studentId = studentToCheck.getStudentId();
+			
+			totalSem = studentToCheck.getSemestersByYearAndSemester().size();
+			for(int j=1; j<studentToCheck.getSemestersByYearAndSemester().size();j++) {
+				int numOfCour = studentToCheck.getNumCourseInNthSementer(j);
+				String result = studentId+","+totalSem+"," + j + "," + numOfCour;
+				countNumOfCour.add(result);
+			}
+		}
 		
 		// TODO: Implement this method
 		
-		return null; // do not forget to return a proper variable.
+		return countNumOfCour; // do not forget to return a proper variable.
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
