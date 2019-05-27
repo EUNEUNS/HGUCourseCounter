@@ -63,12 +63,13 @@ public class HGUCoursePatternAnalyzer {
 			Student stustu = new Student(cour.getStudentId());
 			
 			if(loadStuCourse.containsKey(cour.getStudentId())) {
-				loadStuCourse.get(cour.getStudentId()).addCourse(cour);
+				loadStuCourse.get(stustu.getStudentId()).addCourse(cour);
 			
 			}else {
 				stustu.addCourse(cour);
+					
 				
-				loadStuCourse.put(cour.getStudentId(),stustu);
+				loadStuCourse.put(stustu.getStudentId(),stustu);
 				
 			
 			}
@@ -119,8 +120,8 @@ public class HGUCoursePatternAnalyzer {
 			String studentId = studentToCheck.getStudentId();
 			
 			totalSem = studentToCheck.getSemestersByYearAndSemester().size();
-			for(int j=1; j<studentToCheck.getSemestersByYearAndSemester().size();j++) {
-				int numOfCour = studentToCheck.getNumCourseInNthSementer(j);
+			for(int j=1; j<=studentToCheck.getSemestersByYearAndSemester().size();j++) {
+				int numOfCour = studentToCheck.getNumCourseInNthSemester(j);
 				String result = studentId+","+totalSem+"," + j + "," + numOfCour;
 				countNumOfCour.add(result);
 			}
@@ -131,20 +132,4 @@ public class HGUCoursePatternAnalyzer {
 		return countNumOfCour; // do not forget to return a proper variable.
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

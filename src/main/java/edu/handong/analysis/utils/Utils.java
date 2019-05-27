@@ -1,6 +1,8 @@
 package edu.handong.analysis.utils;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -28,8 +30,23 @@ public class Utils {
 	}
 	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
 		
-		File theDir = new File(targetFileName);
-		if (!theDir.exists()) theDir.mkdirs();
+		try {
+			BufferedWriter fw =
+					new BufferedWriter(new FileWriter(targetFileName));
+				
+		for(String dom : lines) {
+			fw.write(dom);
+			fw.newLine();
+			
+		}
+		fw.flush();
+			fw.close();
+		}
+		catch(Exception e ) {
+			System.out.println(e.getMessage());
+			System.out.println("The file path does not exist. Please check your CLI argument!");
+			
+		}
 		
 	}
 

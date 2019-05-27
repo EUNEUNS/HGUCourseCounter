@@ -11,8 +11,9 @@ public class Student {
 	                                                         // key: Year-Semester
 	                                                         // e.g., 2003-1, 
 	public Student(String studentId) {
-		coursesTaken = new ArrayList<Course>();
+		this.coursesTaken = new ArrayList<Course>();
 		this.studentId=studentId;
+		this.semestersByYearAndSemester = new HashMap<String,Integer>();
 		// constructor
 	}
 	public void setStudentId(String studentId) {
@@ -27,39 +28,39 @@ public class Student {
 	  //  setCoursesTaken(test);
 }
 	public HashMap<String,Integer> getSemestersByYearAndSemester(){
-		this.semestersByYearAndSemester = new HashMap<String,Integer>();
-	
-		return semestersByYearAndSemester;
-		}
-	
-	
-	 	
-	public int getNumCourseInNthSementer(int semester) {
-		
 		ArrayList<Course> aaa = new ArrayList <Course>();
-		ArrayList<Integer> coursecount =new ArrayList<Integer>();
 		aaa = getCoursesTaken();
 		int sequenSem = 1;
-		int count=1;
 		for(Course bbb:aaa) {
-			if(this.semestersByYearAndSemester.containsKey
+			if(!semestersByYearAndSemester.containsKey
 				(Integer.toString(bbb.getYearTaken())+
 						Integer.toString(bbb.getSemesterCourseTaken()))) {
-				count++;
+				semestersByYearAndSemester.put(Integer.toString(bbb.getYearTaken())+
+						Integer.toString(bbb.getSemesterCourseTaken()),sequenSem);
+						sequenSem++;
 			}
-			else{
-				this.semestersByYearAndSemester.put(Integer.toString(bbb.getYearTaken())+
-						Integer.toString(bbb.getSemesterCourseTaken()),sequenSem++);
-						coursecount.add(count);
-						count=1;
-								} 
 		}
 		
-		 return coursecount.get(semester-1);
+		
+		
+		return semestersByYearAndSemester;
+		}
+	public int getNumCourseInNthSemester(int semester) {
+		
+		int count=0;
+		for(String ccc:semestersByYearAndSemester.keySet()) {
+			count++;
+	if(semester==(semestersByYearAndSemester.get(ccc))) {
+		
+	}
+	
+			
+	}
+		return count;
 	}
 		
 	
-	
+		
 	public void setCoursesTaken(ArrayList<Course> coursesTaken) {
 		this.coursesTaken = coursesTaken;
 	}
