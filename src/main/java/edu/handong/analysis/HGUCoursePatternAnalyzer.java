@@ -1,9 +1,26 @@
 package edu.handong.analysis;
 
-import java.util.ArrayList;
+ import java.util.ArrayList;
+ import org.apache.commons.csv.CSVFormat;
+ import org.apache.commons.csv.CSVParser;
+ import org.apache.commons.csv.CSVRecord;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
+//import org.apache.commons.cli.CommandLine;
+//import org.apache.commons.cli.CommandLineParser;
+//import org.apache.commons.cli.DefaultParser;
+//import org.apache.commons.cli.Option;
+//import org.apache.commons.cli.Options;
 
 import edu.handong.analysis.datamodel.Course;
 import edu.handong.analysis.datamodel.Student;
@@ -14,7 +31,17 @@ import edu.handong.analysis.utils.Utils;
 public class HGUCoursePatternAnalyzer {
 
 	private HashMap<String,Student> students;
-	
+	private boolean help;
+	private String inputPath ;
+	private String outputPath; 
+	private String analysis;
+	private String coursecode;
+	private String startyear;
+	private String endyear;
+	private ArrayList<Course> duringCourses;
+	private int totalstudents;
+	private int takenStudnets;
+
 	/**
 	 * This method runs our analysis logic to save the number courses taken by each student per semester in a result file.
 	 * Run method must not be changed!!
@@ -24,29 +51,129 @@ public class HGUCoursePatternAnalyzer {
 		
 		try {
 	// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
-			if(args.length<2)
+	/*		if(args.length<1)
 			throw new NotEnoughArgumentException();
 		} catch (NotEnoughArgumentException e) {
 		System.out.println(e.getMessage());
 			System.exit(0);
+		}*/
+		Options options = createOptions();
+		if(parseOption(options, args)) {
+			
+		if (help) {
+			printHelp(options);
+			System.exit(0);
 		}
 		
-		String dataPath = args[0]; // csv file to be analyzed
-		String resultPath = args[1]; // the file path where the results are saved.
-		ArrayList<String> lines = Utils.getLines(dataPath, true);
+ArrayList<CSVRecord> lines = Utils.getLines(inputPath, true);
 		
-		students = loadStudentCourseRecords(lines);
-		// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
-		Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
 	
-
-
-		// Generate result lines to be saved.
-		ArrayList<String> linesToBeSaved = countNumberOfCoursesTakenInEachSemester(sortedStudents);
+		if(analysis=="1") {
+			students = loadStudentCourseRecords(lines);
+			// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
+			Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
 		
+			// Generate result lines to be saved.
+			ArrayList<String> linesToBeSaved = countNumberOfCoursesTakenInEachSemester(sortedStudents);
+			
 		// Write a file (named like the value of resultPath) with linesTobeSaved.
-		Utils.writeAFile(linesToBeSaved, resultPath);
+			
+		Utils.writeAFile(linesToBeSaved, outputPath);
+		}
+		else if (analysis =="2") {
+			this.duringCourses=new ArrayList<Course>();
+			
+			this.totalstudents=countTotalStudents(lines);
+			
+			this.takenStudnets=countCourseStudnet(duringCourses);
+			
+				
+			
+		}
+		
+		}
+		}
+		catch (Exception e) {
+			System.out.println("");
+			
+		}
+		
+		
+	
+		
+		 // the file path where the results are saved.
+		}
+	
+	private boolean parseOption(Options options, String[] args) {
+		CommandLineParser parser = new DefaultParser();
+		try {
+			CommandLine cmd = parser.parse(options, args);
+			inputPath = cmd.getOptionValue("i");
+			outputPath= cmd.getOptionValue("o");
+			analysis = cmd.getOptionValue("a");
+			coursecode = cmd.getOptionValue("c");
+			startyear = cmd.getOptionValue("s");			
+			endyear = cmd.getOptionValue("e");
+		}catch(Exception e) {
+			printHelp(options);
+			System.exit(1);
+		}
+		
+		return true;
 	}
+	private void printHelp( Options options) {
+		HelpFormatter formatter = new HelpFormatter();
+		String header = "HGU Course Analyzer";
+		String footer ="";
+		formatter.printHelp("HGU CourseCounter", header, options, footer ,true);
+	}
+
+	private Options createOptions() {
+		Options options = new Options();
+		options.addOption(Option.builder("i").longOpt("input")
+				.desc("Set an input file path")
+				.hasArg()
+				.argName("Input path")
+				.required()
+				.build());
+		options.addOption(Option.builder("o").longOpt("output")
+				.desc("Set an output file path")
+				.hasArg()
+				.argName("Output path")
+				.required()
+				.build());
+		options.addOption(Option.builder("a").longOpt("analysis")
+				.desc("1: Count courses per semester, 2: Count per course name and year")
+				.hasArg()
+				.argName("Analysis option")
+				//.required()
+				.build());
+		options.addOption(Option.builder("c").longOpt("coursecode")
+				.desc("Course code for '-a 2' option")
+				.hasArg()
+				.argName("course code")
+				.build());
+		options.addOption(Option.builder("s").longOpt("startyear")
+				.desc("Set the start year for analysis e.g., -s 2002")
+				.hasArg()
+				.argName("Start year for analysis")
+				//.required()
+				.build());
+		options.addOption(Option.builder("e").longOpt("endyear")
+				.desc("Set the end year for analysis e.g., -e 2005")
+				.hasArg()
+				.argName("End year for analysis")
+				//.required()
+				.build());
+		options.addOption(Option.builder("h").longOpt("help")
+				.desc("Show a Help page")
+				.argName("Help")
+				.build());
+		
+	
+		return options;
+	}
+	
 	
 	/**
 	 * This method create HashMap<String,Student> from the data csv file. 
@@ -56,9 +183,10 @@ public class HGUCoursePatternAnalyzer {
 	 * @param lines
 	 * @return
 	 */
-	private HashMap<String,Student> loadStudentCourseRecords(ArrayList<String> lines) {
+	
+	private HashMap<String,Student> loadStudentCourseRecords(ArrayList<CSVRecord> lines) {
 		HashMap<String,Student> loadStuCourse = new HashMap<String,Student>();
-		for(String line: lines) {
+		for(CSVRecord line: lines) {
 			Course cour = new Course(line);
 			Student stustu = new Student(cour.getStudentId());
 			
@@ -131,5 +259,74 @@ public class HGUCoursePatternAnalyzer {
 		
 		return countNumOfCour; // do not forget to return a proper variable.
 	}
+
+
+		private int  countTotalStudents(ArrayList<CSVRecord> lines){
+			totalstudents=0;
+			for(CSVRecord line:lines) {
+				
+				Course cour = new Course(line);
+				if(Integer.parseInt(startyear)<=Integer.parseInt(cour.getYearTaken())&&
+				   Integer.parseInt(endyear)>=Integer.parseInt(cour.getYearTaken())) {
+					this.duringCourses.add(cour);	
+					totalstudents++;
+				}			
+			}
+			return totalstudents;
+		}
+		private int countCourseStudnet(ArrayList<Course> duringCour){
+			int takenStudents=0;
+			for(Course cour: duringCour) {
+				if(cour.getCourseCode()==this.coursecode) {
+					takenStudents++;
+					
+				}
+				
+			}
+			return takenStudents;
+		}
+		
 }
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

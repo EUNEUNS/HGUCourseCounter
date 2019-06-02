@@ -1,6 +1,6 @@
 package edu.handong.analysis.datamodel;
 
-
+import org.apache.commons.csv.CSVRecord;
 
 public class Course {
 	private String studentId;
@@ -10,22 +10,21 @@ public class Course {
 	private String courseCode;
 	private String courseName;
 	private String courseCredit;
-	private int yearTaken;
-	private int semesterCourseTaken;
+	private String yearTaken;
+	private String semesterCourseTaken;
 
 	
 	
-	public Course(String line) { // Split the line from constructor to initialize the field.
-		String []aaa = line.split(",\\s");
-		setStudentId(aaa[0]);
-		setYearMonthGraduated(aaa[1]);
-		setFirstMajor(aaa[2]);
-		setSecondMajor(aaa[3]);
-		setCourseCode(aaa[4]);
-		setCourseName(aaa[5]);
-		setCourseCredit(aaa[6]);
-		setYearTaken(Integer.parseInt(aaa[7]));
-		setSemesterCourseTaken(Integer.parseInt(aaa[8]));
+	public Course(CSVRecord line) { // Split the line from constructor to initialize the field.
+		setStudentId(line.get(0));
+		setYearMonthGraduated(line.get(1));
+		setFirstMajor(line.get(2));
+		setSecondMajor(line.get(3));
+		setCourseCode(line.get(4));
+		setCourseName(line.get(5));
+		setCourseCredit(line.get(6));
+		setYearTaken(line.get(7));
+		setSemesterCourseTaken(line.get(8));
 		}
 	
 	public String getStudentId() {
@@ -71,10 +70,10 @@ public class Course {
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
-	public int getYearTaken() {
+	public String getYearTaken() {
 		return yearTaken;
 	}
-	public void setYearTaken(int yearTaken) {
+	public void setYearTaken(String yearTaken) {
 		this.yearTaken = yearTaken;
 	}
 	public String getCourseCredit() {
@@ -83,10 +82,10 @@ public class Course {
 	public void setCourseCredit(String courseCredit) {
 		this.courseCredit = courseCredit;
 	}
-	public int getSemesterCourseTaken() {
+	public String getSemesterCourseTaken() {
 		return semesterCourseTaken;
 	}
-	public void setSemesterCourseTaken(int semesterCourseTaken) {
+	public void setSemesterCourseTaken(String semesterCourseTaken) {
 		this.semesterCourseTaken = semesterCourseTaken;
 	}
 

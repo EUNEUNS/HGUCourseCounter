@@ -3,9 +3,6 @@ package edu.handong.analysis.utils;
 
 public class NotEnoughArgumentException extends Exception
 {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public NotEnoughArgumentException ()

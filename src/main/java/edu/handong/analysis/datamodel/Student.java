@@ -33,10 +33,10 @@ public class Student {
 		int sequenSem = 1;
 		for(Course bbb:aaa) {
 			if(!semestersByYearAndSemester.containsKey
-				(Integer.toString(bbb.getYearTaken())+
-						Integer.toString(bbb.getSemesterCourseTaken()))) {
-				semestersByYearAndSemester.put(Integer.toString(bbb.getYearTaken())+
-						Integer.toString(bbb.getSemesterCourseTaken()),sequenSem);
+				(bbb.getYearTaken()+
+				bbb.getSemesterCourseTaken())) {
+				semestersByYearAndSemester.put(bbb.getYearTaken()+bbb.getSemesterCourseTaken(),
+												sequenSem);
 						sequenSem++;
 			}
 		}
@@ -45,22 +45,39 @@ public class Student {
 		
 		return semestersByYearAndSemester;
 		}
+	
 	public int getNumCourseInNthSemester(int semester) {
 		
-		int count=0;
-		for(String ccc:semestersByYearAndSemester.keySet()) {
-			count++;
-	if(semester==(semestersByYearAndSemester.get(ccc))) {
-		
-	}
-	
-			
-	}
+		int count=0;	
+		HashMap<String, Integer> aaa = new HashMap <String, Integer>();
+		aaa =this.getSemestersByYearAndSemester();
+		for(int value:aaa.values()) {
+			if(value ==semester) {
+				String realValue = getKey(aaa,value);
+				for (Course courseTaken : coursesTaken) {
+					String whenStudy =courseTaken.getYearTaken()+
+									   courseTaken.getSemesterCourseTaken();
+					if(whenStudy.contentEquals(realValue))
+						count++;
+							}
+						}
+					}
 		return count;
 	}
 		
+	private String getKey(HashMap<String, Integer> aaa, int value) {
+		for(String a :aaa.keySet()) {
+			if(aaa.get(a).equals(value))
+			{
+				return a;
+			}
+		}
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 		
+
 	public void setCoursesTaken(ArrayList<Course> coursesTaken) {
 		this.coursesTaken = coursesTaken;
 	}

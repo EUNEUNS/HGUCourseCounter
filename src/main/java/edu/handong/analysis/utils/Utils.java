@@ -1,33 +1,54 @@
 package edu.handong.analysis.utils;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Iterator;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
 
 public class Utils {
 
 	
-	public static ArrayList<String> getLines(String file,boolean removeHeader){
-			ArrayList<String> lines = new ArrayList<String>();
-        Scanner inputStream = null;
-        
+	public static ArrayList<CSVRecord> getLines(String file,boolean removeHeader){
+		
+			ArrayList<CSVRecord> lines = new ArrayList<CSVRecord>();
+			CSVParser csvParser;
         try {
-            inputStream = new Scanner (new File (file));
-        }  catch (FileNotFoundException e) {
+        	Reader reader = Files.newBufferedReader(Paths.get(file));
+            csvParser = new CSVParser(reader, CSVFormat.EXCEL.withIgnoreSurroundingSpaces().withTrim());
+            Iterator<CSVRecord> iter = csvParser.iterator();
+            while(iter.hasNext()) {
+                
+                lines.add(iter.next());
+               // System.out.println(iter.next());
+        } 
+        }catch (IOException e) {
             System.exit (0);
         }
-        while (inputStream.hasNextLine ()) {
-            String line = inputStream.nextLine ();
-            lines.add(line);
+      /*  Iterator<CSVRecord> iter = csvParser.iterator();
+        while(iter.hasNext()) {
             
-        }
-        if(removeHeader) {
+            lines.add(iter.next());
+            
+        }*/
+               if(removeHeader) {
         	 lines.remove(0);
         }
             return lines;
 	}
+	
+	
+	
+	
+	
+	
+	
 	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
 		
 		try {
