@@ -15,32 +15,34 @@ import org.apache.commons.csv.CSVRecord;
 public class Utils {
 
 	
-	public static ArrayList<CSVRecord> getLines(String file,boolean removeHeader){
+	public static ArrayList<CSVRecord> getLines(String file){
 		
 			ArrayList<CSVRecord> lines = new ArrayList<CSVRecord>();
 			CSVParser csvParser;
         try {
         	Reader reader = Files.newBufferedReader(Paths.get(file));
-            csvParser = new CSVParser(reader, CSVFormat.EXCEL.withIgnoreSurroundingSpaces().withTrim());
+            csvParser = new CSVParser(reader, CSVFormat.EXCEL.withIgnoreSurroundingSpaces() .withFirstRecordAsHeader()
+            		.withIgnoreHeaderCase()
+            		.withTrim());
             Iterator<CSVRecord> iter = csvParser.iterator();
+
             while(iter.hasNext()) {
-                
+
                 lines.add(iter.next());
-               // System.out.println(iter.next());
+                //System.out.println(iter.next());
         } 
+          
         }catch (IOException e) {
             System.exit (0);
         }
+     
       /*  Iterator<CSVRecord> iter = csvParser.iterator();
         while(iter.hasNext()) {
             
             lines.add(iter.next());
             
         }*/
-               if(removeHeader) {
-        	 lines.remove(0);
-        }
-            return lines;
+        return lines;
 	}
 	
 	
