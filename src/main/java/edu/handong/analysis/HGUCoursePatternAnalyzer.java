@@ -154,6 +154,8 @@ public class HGUCoursePatternAnalyzer {
 		for (CSVRecord line : lines) {
 			Course cour = new Course(line);
 			Student stustu = new Student(cour.getStudentId());
+			if (Integer.parseInt(startyear) <= Integer.parseInt(cour.getYearTaken())
+					&& Integer.parseInt(endyear) >= Integer.parseInt(cour.getYearTaken())) {
 
 			if (loadStuCourse.containsKey(cour.getStudentId())) {
 				loadStuCourse.get(stustu.getStudentId()).addCourse(cour);
@@ -162,7 +164,7 @@ public class HGUCoursePatternAnalyzer {
 				stustu.addCourse(cour);
 
 				loadStuCourse.put(stustu.getStudentId(), stustu);
-
+				}
 			}
 		}
 		return loadStuCourse;
