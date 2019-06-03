@@ -1,7 +1,7 @@
 package edu.handong.analysis;
 
- import java.util.ArrayList;
- import org.apache.commons.csv.CSVRecord;
+import java.util.ArrayList;
+import org.apache.commons.csv.CSVRecord;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,61 +43,61 @@ public class HGUCoursePatternAnalyzer {
 	 * @param args
 	 */
 	public void run(String[] args) {
-		
+
 		try {
-	// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
-	/*		if(args.length<1)
+			// when there are not enough arguments from CLI, it throws the NotEnoughArgmentException which must be defined by you.
+			/*		if(args.length<1)
 			throw new NotEnoughArgumentException();
 		} catch (NotEnoughArgumentException e) {
 		System.out.println(e.getMessage());
 			System.exit(0);
 		}*/
-		Options options = createOptions();
-		if(parseOption(options, args)) {
-			
-		if (help) {
-			printHelp(options);
-			System.exit(0);
-		}
-		
-ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
-	
-	
-		if(analysis=="1") {
-			students = loadStudentCourseRecords(lines);
-			// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
-			Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
-		
-			// Generate result lines to be saved.
-			ArrayList<String> linesToBeSaved = countNumberOfCoursesTakenInEachSemester(sortedStudents);
-			
-		// Write a file (named like the value of resultPath) with linesTobeSaved.
-			
-		Utils.writeAFile(linesToBeSaved, outputPath);
-		}
-		else if (analysis =="2") {
-			
-			this.duringCourses=new HashMap<String,ArrayList<Course>>();
-			
-				duringCourses=countTotalCourses(lines);
-				Map<String,ArrayList<Course>> duringCour = new TreeMap<String,ArrayList<Course>>(duringCourses); 
-				
-			
-				ArrayList<String> resultresult = countCourseStudnet(duringCour);
-				
-				Utils.writeAFile(resultresult, outputPath);
-				
-			
-		}
-		
-		}
+			Options options = createOptions();
+			if(parseOption(options, args)) {
+
+				if (help) {
+					printHelp(options);
+					System.exit(0);
+				}
+
+				ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
+
+
+				if(analysis.equals("1")) {
+					students = loadStudentCourseRecords(lines);
+					// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
+					Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
+
+					// Generate result lines to be saved.
+					ArrayList<String> linesToBeSaved = countNumberOfCoursesTakenInEachSemester(sortedStudents);
+
+					// Write a file (named like the value of resultPath) with linesTobeSaved.
+
+					Utils.writeAFile(linesToBeSaved, outputPath);
+				}
+				else if (analysis.equals("2")) {
+
+					this.duringCourses=new HashMap<String,ArrayList<Course>>();
+
+					duringCourses=countTotalCourses(lines);
+					Map<String,ArrayList<Course>> duringCour = new TreeMap<String,ArrayList<Course>>(duringCourses); 
+
+
+					ArrayList<String> resultresult = countCourseStudnet(duringCour);
+
+					Utils.writeAFile(resultresult, outputPath);
+
+
+				}
+
+			}
 		}
 		catch (Exception e) {
-			System.out.println("");
-			
+			System.out.println(e.getMessage());
+
 		}
-		}
-	
+	}
+
 	private boolean parseOption(Options options, String[] args) {
 		CommandLineParser parser = new DefaultParser();
 		try {
@@ -112,7 +112,7 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 			printHelp(options);
 			System.exit(1);
 		}
-		
+
 		return true;
 	}
 	private void printHelp( Options options) {
@@ -163,12 +163,12 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 				.desc("Show a Help page")
 				.argName("Help")
 				.build());
-		
-	
+
+
 		return options;
 	}
-	
-	
+
+
 	/**
 	 * This method create HashMap<String,Student> from the data csv file. 
 	 * 
@@ -177,29 +177,29 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 	 * @param lines
 	 * @return
 	 */
-	
+
 	private HashMap<String,Student> loadStudentCourseRecords(ArrayList<CSVRecord> lines) {
 		HashMap<String,Student> loadStuCourse = new HashMap<String,Student>();
 		for(CSVRecord line: lines) {
 			Course cour = new Course(line);
 			Student stustu = new Student(cour.getStudentId());
-			
+
 			if(loadStuCourse.containsKey(cour.getStudentId())) {
 				loadStuCourse.get(stustu.getStudentId()).addCourse(cour);
-			
+
 			}else {
 				stustu.addCourse(cour);
-					
-				
+
+
 				loadStuCourse.put(stustu.getStudentId(),stustu);
-				
-			
+
+
 			}
 		}
-			return loadStuCourse;
-		
+		return loadStuCourse;
+
 		/*
-		
+
 		for(int i=0; i < lines.size();i++) {
 			String line = lines.get(i);
 			String[] names = line.split(("\\s,\\s"));
@@ -209,29 +209,29 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 			if(!stu.contains(stustu)) {
 				stu.add(stustu);
 		if(loadStuCourse.containsKey(stu.contains(stustu))) {
-				
+
 		}else {
-			
-			
+
+
 		}*/
-			
-		
-		
+
+
+
 		// TODO: Implement this method	
-		
-		 // do not forget to return a proper variable.
-		
+
+		// do not forget to return a proper variable.
+
 	}
 
 	/**
 	 * This method generate the number of courses taken by a student in each semester. The result file look like this:
 	 * StudentID, TotalNumberOfSemestersRegistered, Semester, NumCoursesTakenInTheSemester
 	 * 0001,14,1,9
-     * 0001,14,2,8
+	 * 0001,14,2,8
 	 * ....
 	 * 0001,14,1,9 => this means, 0001 student registered 14 semeters in total.
 	 * In the first semeter (1), the student took 9 courses.
-		 * @param sortedStudents
+	 * @param sortedStudents
 	 * @return
 	 */
 	private ArrayList<String> countNumberOfCoursesTakenInEachSemester(Map<String, Student> sortedStudents) {
@@ -240,7 +240,7 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 		for(Map.Entry<String,Student> entry : sortedStudents.entrySet()) {
 			Student studentToCheck = entry.getValue();
 			String studentId = studentToCheck.getStudentId();
-			
+
 			totalSem = studentToCheck.getSemestersByYearAndSemester().size();
 			for(int j=1; j<=studentToCheck.getSemestersByYearAndSemester().size();j++) {
 				int numOfCour = studentToCheck.getNumCourseInNthSemester(j);
@@ -248,85 +248,93 @@ ArrayList<CSVRecord> lines = Utils.getLines(inputPath);
 				countNumOfCour.add(result);
 			}
 		}
-		
+
 		// TODO: Implement this method
-		
+
 		return countNumOfCour; // do not forget to return a proper variable.
 	}
 
 
-		private HashMap<String,ArrayList<Course>> countTotalCourses(ArrayList<CSVRecord> lines){
-			HashMap<String,ArrayList<Course>> HashCount=new HashMap<String,ArrayList<Course>> ();
-			for(CSVRecord line:lines) {
-				
-				Course cour = new Course(line);
-				if(Integer.parseInt(startyear)<=Integer.parseInt(cour.getYearTaken())&&
-				   Integer.parseInt(endyear)>=Integer.parseInt(cour.getYearTaken())) {
-					
-					if(HashCount.containsKey(cour.getYearTaken()+" "+cour.getSemesterCourseTaken())) {
-						HashCount.get((cour.getYearTaken()+" "+cour.getSemesterCourseTaken())).add(cour);
-					
-					}else {
-						ArrayList<Course> courses = new ArrayList<Course>();
-						HashCount.put(cour.getYearTaken()+" "+cour.getSemesterCourseTaken(),courses);
-						courses.add(cour);
+	private HashMap<String,ArrayList<Course>> countTotalCourses(ArrayList<CSVRecord> lines){
+		HashMap<String,ArrayList<Course>> HashCount=new HashMap<String,ArrayList<Course>> ();
+		for(CSVRecord line:lines) {
+
+			Course cour = new Course(line);
+			if(Integer.parseInt(startyear)<=Integer.parseInt(cour.getYearTaken())&&
+					Integer.parseInt(endyear)>=Integer.parseInt(cour.getYearTaken())) {
+
+				if(HashCount.containsKey(cour.getYearTaken()+" "+cour.getSemesterCourseTaken())) {
+					HashCount.get((cour.getYearTaken()+" "+cour.getSemesterCourseTaken())).add(cour);
+
+				}else {
+					ArrayList<Course> courses = new ArrayList<Course>();
+					HashCount.put(cour.getYearTaken()+" "+cour.getSemesterCourseTaken(),courses);
+					courses.add(cour);
 				}			
 			}
 		}
-			return HashCount;
-		}
-		private ArrayList<String> countCourseStudnet( Map<String,ArrayList<Course>> duringCour){
-			ArrayList<String> finalresult = new ArrayList<String>();
+		return HashCount;
+	}
+	private ArrayList<String> countCourseStudnet( Map<String,ArrayList<Course>> duringCour){
+		ArrayList<String> finalresult = new ArrayList<String>();
+			String courseName = null;
+
+			float rate =0;
+			
+			for(Map.Entry<String,ArrayList<Course>> entry : duringCour.entrySet()) {
+			ArrayList<Course> cour = entry.getValue();
+			ArrayList<String> totalStudents = new ArrayList<String>();
 			int totalStu = 0;
 			int semStu=0;
-			float rate =0;
-			String courseName = null;
-			for(Map.Entry<String,ArrayList<Course>> entry : duringCour.entrySet()) {
-				ArrayList<Course> cour = entry.getValue();
-				String aaa[] = entry.getKey().split(" \\s");
-				String year =aaa[0];
-				String semester = aaa[1];
-				totalStu=cour.size();
+			String aaa[] = entry.getKey().split(" ");
+			String year =aaa[0];
+			String semester = aaa[1];
+			
 			for(Course course: cour) {
-				if(course.getCourseCode()==this.coursecode) {
+				
+				if(!totalStudents.contains(course.getStudentId()))
+					totalStudents.add(course.getStudentId());
+					totalStu++;
+				if(course.getCourseCode().equals(this.coursecode)) {
 					semStu++;
 					courseName = course.getCourseName();
-					}
-				
-				rate=(semStu/(float)totalStu)*100;
 				}
-String result = year+","+semester+","  + coursecode+ ","+ courseName +","+totalStu+","+semStu+","+String.format("%.1f", rate);
-				finalresult.add(result);
+
+				rate=(semStu/(float)totalStu)*100;
+				
 			}
-			
-			
-			return finalresult;
+			String result = year+","+semester+","  + coursecode+ ","+ courseName +","+totalStu+","+semStu+","+String.format("%.1f", rate);
+			finalresult.add(result);
 		}
-		
+
+
+		return finalresult;
+	}
+
 }
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
 
 
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

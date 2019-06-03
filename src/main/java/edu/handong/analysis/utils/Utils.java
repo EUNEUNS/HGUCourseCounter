@@ -21,20 +21,21 @@ public class Utils {
 			CSVParser csvParser;
         try {
         	Reader reader = Files.newBufferedReader(Paths.get(file));
-            csvParser = new CSVParser(reader, CSVFormat.EXCEL.withIgnoreSurroundingSpaces() .withFirstRecordAsHeader()
+        	 csvParser = new CSVParser(reader, CSVFormat.EXCEL.withIgnoreSurroundingSpaces() .withFirstRecordAsHeader()
             		.withIgnoreHeaderCase()
             		.withTrim());
-            Iterator<CSVRecord> iter = csvParser.iterator();
+        	Iterator<CSVRecord> iter = csvParser.iterator();
 
             while(iter.hasNext()) {
 
                 lines.add(iter.next());
                 //System.out.println(iter.next());
         } 
-          
         }catch (IOException e) {
             System.exit (0);
         }
+        
+      
      
       /*  Iterator<CSVRecord> iter = csvParser.iterator();
         while(iter.hasNext()) {
