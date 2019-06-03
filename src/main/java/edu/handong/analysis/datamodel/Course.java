@@ -13,8 +13,6 @@ public class Course {
 	private String yearTaken;
 	private String semesterCourseTaken;
 
-	
-	
 	public Course(CSVRecord line) { // Split the line from constructor to initialize the field.
 		setStudentId(line.get(0));
 		setYearMonthGraduated(line.get(1));
@@ -25,8 +23,8 @@ public class Course {
 		setCourseCredit(line.get(6));
 		setYearTaken(line.get(7));
 		setSemesterCourseTaken(line.get(8));
-		}
-	
+	}
+
 	public String getStudentId() {
 		return studentId;
 	}
@@ -35,65 +33,70 @@ public class Course {
 		this.studentId = studentId;
 	}
 
-
-
 	public String getYearMonthGraduated() {
 		return yearMonthGraduated;
 	}
 
-
-
 	public void setYearMonthGraduated(String yearMonthGraduated) {
 		this.yearMonthGraduated = yearMonthGraduated;
 	}
+
 	public String getFirstMajor() {
 		return firstMajor;
 	}
+
 	public void setFirstMajor(String firstMajor) {
 		this.firstMajor = firstMajor;
 	}
+
 	public String getSecondMajor() {
 		return secondMajor;
 	}
+
 	public void setSecondMajor(String secondMajor) {
 		this.secondMajor = secondMajor;
 	}
+
 	public String getCourseCode() {
 		return courseCode;
 	}
+
 	public void setCourseCode(String courseCode) {
 		this.courseCode = courseCode;
 	}
+
 	public String getCourseName() {
 		return courseName;
 	}
+
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
+
 	public String getYearTaken() {
 		return yearTaken;
 	}
+
 	public void setYearTaken(String yearTaken) {
 		this.yearTaken = yearTaken;
 	}
+
 	public String getCourseCredit() {
 		return courseCredit;
 	}
+
 	public void setCourseCredit(String courseCredit) {
 		this.courseCredit = courseCredit;
 	}
+
 	public String getSemesterCourseTaken() {
 		return semesterCourseTaken;
 	}
+
 	public void setSemesterCourseTaken(String semesterCourseTaken) {
 		this.semesterCourseTaken = semesterCourseTaken;
 	}
 
-	
+	/* Self-define getter and setter if needed */
 
-
-	
-	/* Self-define getter and setter if needed*/	
-	
-	
 }
